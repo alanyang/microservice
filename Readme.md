@@ -23,6 +23,7 @@ sample用假数据演示了我们videojj项目的基本业务逻辑
 
 运行sample
 ```
+git clone https://github.com/alanyang/microservice.git
 npm install
 npm start // start service
 npm run client // run client on other terminal
@@ -47,11 +48,7 @@ id语法是类C语言的一种语法，大可把他看成是C语言的头文件�
 id基本类型对应的js类型
 
 **基本类型**
-|----ID类型----|----JS类型----|
-|----byte-----|-----Number--|
-|--i16,i32----|-----Number--|
-|----double---|-----Number--|
-|----string---|-----String---|
+byte,double,i16,i32都对应Number,string就对应String。
 数据类尽量用小的，这样能减少网络传输。
 具体到业务，最多出现的是hidden = 0, show = 1之类，最佳实践是用enum定义，这样网络传输只会占8个bit。如tag.thrift里的
 ```
@@ -121,3 +118,52 @@ service UserService extends auth.AuthService {
 }
 ```
 id定义是表态类型的，所以方法和参数都需要加入类型，由于还在打包成binary网络传输，还要加上index mark于是就出现了这种奇葩的定义```1:string id```
+
+
+>有了定义的类型和服务接口，就可以写js服务了。
+
+
+#### Node.js thrift服务逻辑的Coding
+通过thrift命令生成了对应的js文件在，gen-nodejs下。引入之，然后就可以写代码了。示例见server.js
+```
+'use strict'
+
+const thrift = require('thrift')
+const User = require('./idescription/gen-nodejs/UserService')
+const UserType = require('./idescription/gen-nodejs/user_types')
+
+const userServer = thrift.createServer(User, {
+    getUser(id, result) {
+        //replace to mongo findone
+        let _user = getUser(id)
+        //suppose io time mongodb find use time 100ms
+        setTimeout(()=>{
+            let user = new UserType.User
+            result(null, Object.assign(user, _user))
+        }, 100)
+    },
+
+    resetPassword(id, old, result) {
+        const _user = getUser(id)
+        if(!_user || _user.password != old) {
+            const error = new UserType.UserException
+            error.errorCode = errorsUnmatchOldPassword
+            error.reason = 'invalid user or unmatch old password'
+            result(error, false)
+        } else {
+            //update user password in db
+            result(null, true)
+        }
+    }
+})
+
+userServer.listen(9999)
+```
+**so easy.**可见对应id服务接口是一样的,就多了一个参数result用以返回值，result是一个函数，接受两个参数，1为错误对像，2为调用结果。
+
+
+#### Node.js 客户端Coding
+代码在client.js里，大体如下
+```
+
+```
