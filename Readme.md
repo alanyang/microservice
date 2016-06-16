@@ -221,7 +221,7 @@ exception UserException {
     2:string reason
 }
 ```
-这个通过thrift命令会自动生成在_types.js里。比如user.thrift中定义的exception会生成在user_types.js中。
+通过thrift命令会自动生成js对象在_types.js里。比如user.thrift中定义的exception会生成在user_types.js中。
 Node.js实现中的使用，直接new之，再传入result即可，如
 ```
 const error = new UserTypes.UserException
