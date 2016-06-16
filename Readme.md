@@ -19,7 +19,7 @@ sample用假数据演示了我们videojj项目的基本业务逻辑
 - 权限审核
 - 如果有要限则最后保存tag
 
-为图方便server.js运行了tag service和user service
+为图方便server.js运行了tag和user两个service，实际项目中必然分开。
 
 运行sample
 ```
@@ -207,3 +207,25 @@ userService.getUser(id, (err, user) => {
 ```
 题外话，thrift中transport和protocol分为N种，具体可以看官网介绍。除去像json protocol这种方便调度的模式外，各有优劣，可以一一试之。
 IO模型一样分4种，但在Node.js中最爽的一点就是他TM默认就是性能最好的noblock，且只支持这一种io模式。速度飞快。
+
+
+#### 错误（异常）
+thrift接口不是保证安全的，所以可以抛出异常如。
+```
+bool updateUser(1:string id, 2:User data) throws (1:UserException error)
+```
+错误定义
+```
+exception UserException {
+    1:i16 errorCode
+    2:string reason
+}
+```
+这个通过thrift命令会自动生成在_types.js里。比如user.thrift中定义的exception会生成在user_types.js中。
+Node.js实现中的使用，直接new之，再传入result即可，如
+```
+const error = new UserTypes.UserException
+error.errorCode = 1
+error.reason = 'password unmatch'
+result(error, false)
+```
