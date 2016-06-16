@@ -165,5 +165,45 @@ userServer.listen(9999)
 #### Node.js 客户端Coding
 代码在client.js里，大体如下
 ```
+'use strict'
+const thrift = require('thrift')
+const User = require('./idescription/gen-nodejs/UserService')
+const UserTypes = require('./idescription/gen-nodejs/user_types')
+const Tag = require('./idescription/gen-nodejs/TagService')
+const TagType = require('./idescription/gen-nodejs/tag_types')
 
+
+const transport = thrift.TBufferedTransport()
+const protocol  = thrift.TBinaryProtocol()
+
+//connect to user server
+const userConn = thrift.createConnection('localhost', 9090, {transport, protocol})
+userConn.on('error', console.error)
+const userService = thrift.createClient(User, userConn)
+
+//connect to tag server
+const tagConn = thrift.createConnection('localhost', 9999, {transport, protocol})
+tagConn.on('error', console.error)
+const tagService = thrift.createClient(Tag, tagConn)
+
+
+//这是一个认证权限+保存tag的调用
+const right = 'edit'
+const id = 'popqweuiqwie13123'
+userService.getUser(id, (err, user) => {
+    userService.hasRight(id, right, (err, ret) => {
+        console.log(ret && `${user.email} has ${right} right` || `reject ${right} right`)
+        if(ret) {
+            //has edit right
+            tagService.saveTag(212.23, 78.12, (new Date).getTime(), 'my tag', '123askdjkh', (err, ret) => {
+                console.log('has right, edit tag begin')
+                console.log(ret && 'save tag done')
+                console.log('======================') 
+            })
+        }
+        console.log('======================')
+    })
+})
 ```
+题外话，thrift中transport和protocol分为N种，具体可以看官网介绍。除去像json protocol这种方便调度的模式外，各有优劣，可以一一试之。
+IO模型一样分4种，但在Node.js中最爽的一点就是他TM默认就是性能最好的noblock，且只支持这一种io模式。速度飞快。
