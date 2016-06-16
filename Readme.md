@@ -31,7 +31,7 @@ npm run client // run client on other terminal
 
 
 #### thrift interface description(id)文件
-文件在idescription下，可以把./idescription/gen-nodejs删除。然后用安装好的thrift重新生成
+在idescription文件夹下，可以把./idescription/gen-nodejs删除。然后用安装好的thrift重新生成
 ```
 thrift -r --gen js:node user.thrift  //user.thrift包含了auth.thrift依赖，故要加-r
 thrift --gen js:node tag.thrift
@@ -210,7 +210,7 @@ IO模型一样分4种，但在Node.js中最爽的一点就是他TM默认就是�
 
 
 #### 错误（异常）
-thrift接口不是保证安全的，所以可以抛出异常如。
+thrift接口调用是unsafe的，所以可以抛出异常如：
 ```
 bool updateUser(1:string id, 2:User data) throws (1:UserException error)
 ```
