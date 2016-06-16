@@ -117,7 +117,7 @@ service UserService extends auth.AuthService {
     bool activateUser(1:string id) throws (1:UserException error)
 }
 ```
-id定义是表态类型的，所以方法和参数都需要加入类型，由于还在打包成binary网络传输，还要加上index mark于是就出现了这种奇葩的定义```1:string id```
+id定义是静态类型的，所以方法和参数都需要加入类型，由于还在打包成binary网络传输，还要加上index mark于是就出现了这种奇葩的定义```1:string id```
 
 
 >有了定义的类型和服务接口，就可以写js服务了。
