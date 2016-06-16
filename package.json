@@ -1,0 +1,17 @@
+{
+  "name": "microservice",
+  "version": "0.1.0",
+  "description": "videojj microservice",
+  "main": "index.js",
+  "scripts": {
+    "start": "node server.js",
+    "client": "node client.js"
+  },
+  "author": "videojj",
+  "license": "MIT",
+  "dependencies": {
+    "thrift": "^0.9.3"
+  },
+  "devDependencies": {
+  }
+}
