@@ -133,9 +133,9 @@ userServer.listen(9090)
 
 const client = zookeeper.createClient('127.0.0.1:2181')
 client.once('connected', () => {
+	client.create('/userServer', (err, path) => console.log(err, path))
 	client.create(
-		'/userServer', 
-		new Buffer('127.0.0.1:9090'), 
+		`/userServer/127.0.0.1:9090`, 
 		zookeeper.CreateMode.EPHEMERAL,(err, path) => {  //EPHEMERAL mode remove node on disconnect
 		if(err) {
 			console.error(err)

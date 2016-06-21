@@ -9,14 +9,23 @@ const TagType = require('./idescription/gen-nodejs/tag_types')
 const transport = thrift.TBufferedTransport()
 const protocol = thrift.TBinaryProtocol()
 
+function shuffleArray(array) {
+    for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+    return array;
+}
 
 const client = zookeeper.createClient('127.0.0.1:2181')
 client.connect()
 client.once('connected', () => {
-    client.getData('/userServer', event => {}, (err, data, stat) => {
-        console.log(err, data, stat)
-        const serviceAddr = data.toString().split(':')
-            //connect to user server
+    client.getChildren('/userServer', event => {}, (err, children, stat) => {
+        children = shuffleArray(children)
+        const serviceAddr = children[0].split(':')
+        //connect to user server
         const userConn = thrift.createConnection(serviceAddr[0], parseInt(serviceAddr[1]), {
             transport, protocol
         })
