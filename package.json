@@ -10,8 +10,8 @@
   "author": "videojj",
   "license": "MIT",
   "dependencies": {
+    "node-zookeeper-client": "^0.2.2",
     "thrift": "^0.9.3"
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }
