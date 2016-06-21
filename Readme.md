@@ -5,6 +5,7 @@
 ```
 brew update
 brew install thrift
+brew install zookeeper  //管理集群
 ```
 Node.js安装就直接
 ```
@@ -229,3 +230,16 @@ error.errorCode = 1
 error.reason = 'password unmatch'
 result(error, false)
 ```
+
+
+#### 利用Zookeeper管理Thrift集群
+安装zookeeper
+```
+brew install zookeeper
+```
+安装node-zookeeper-client
+```
+npm install node-zookeeper-client --save
+```
+
+具体实现看server.js,client.js
