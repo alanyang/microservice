@@ -1,4 +1,5 @@
 namespace java tag
+namespace cpp tag
 
 enum Hidden {
 	yes = 1

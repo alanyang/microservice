@@ -49,13 +49,20 @@ const getUser = (id) => {
 }
 
 const userServer = thrift.createServer(User, {
-    getUser(id, result) {
-    	//replace to mongo findone
-    	let _user = getUser(id)
-		//suppose io time mongodb find use time 100ms
-		let user = new UserType.User
-		result(null, Object.assign(user, _user))
-    },
+  //   getUser(id, result) {
+  //   	//replace to mongo findone
+  //   	let _user = getUser(id)
+		// //suppose io time mongodb find use time 100ms
+		// let user = new UserType.User
+		// result(null, Object.assign(user, _user))
+  //   },
+	
+	//server promise
+    getUser(id) {
+		let _user = getUser(id)
+		let user  = new UserType.User
+		return Object.assign(user, _user)
+    },	
 
     resetPassword(id, old, result) {
 		const _user = getUser(id)

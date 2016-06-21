@@ -5,7 +5,6 @@ const UserTypes = require('./idescription/gen-nodejs/user_types')
 const Tag = require('./idescription/gen-nodejs/TagService')
 const TagType = require('./idescription/gen-nodejs/tag_types')
 
-
 const transport = thrift.TBufferedTransport()
 const protocol  = thrift.TBinaryProtocol()
 
@@ -19,16 +18,15 @@ const tagConn = thrift.createConnection('localhost', 9999, {transport, protocol}
 tagConn.on('error', console.error)
 const tagService = thrift.createClient(Tag, tagConn)
 
-
 //call service getUser
-userService.getUser('popqweuiqwie13123', (err, user)=> {
+userService.getUser('popqweuiqwie13123').then(user => {
     console.log('Got a user')
     console.log(user)
     console.log('======================')
 })
 
 //call resetPassword
-userService.resetPassword('popqweuiqwie13123', 'oioqwe', (err, ret) => {
+userService.resetPassword('popqweuiqwie13123', 'oioqwe').then(ret => {
     console.log('reset password')
     console.log(err || ret)
     console.log('======================')
@@ -37,13 +35,13 @@ userService.resetPassword('popqweuiqwie13123', 'oioqwe', (err, ret) => {
 //call updateUser need generate a User struct, this is update user's status
 const user = new UserTypes.User
 user.status = UserTypes.Status.unactivated
-userService.updateUser('popqweuiqwie13123', user, (err, ret) => {
+userService.updateUser('popqweuiqwie13123', user).then(ret => {
     console.log('update user')
     console.log(err || ret)
     console.log('======================')
 })
 
-userService.isAuthenticated('123123asdads', (err, ret) => {
+userService.isAuthenticated('123123asdads').then(ret => {
     console.log(ret && 'Authenticated' || 'Unauthenticated')
     console.log('======================')
 })

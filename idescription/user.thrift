@@ -31,7 +31,7 @@ exception UserException {
 	2:string reason
 }
 
-//can be extend
+//can be extended
 service UserService extends auth.AuthService {
 	//
 	User getUser(1:string id)
