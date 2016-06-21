@@ -120,15 +120,28 @@ const userServer = thrift.createServer(User, {
 
 userServer.listen(9090)
 
+// const packetAddress = (addr) => {
+// 	const ip, port = addr.spit(':')
+// 	const bip = Buffer.conact(ip.map( i => parseInt(i)))
+// 	const bport = Buffer.alloc(2)
+// 	bport.writeUInt16BE(port)
+// 	return Buffer.concat([bip, bport])
+// }
+
+// const unpacketAddress = (buf) => {
+// }
+
 const client = zookeeper.createClient('127.0.0.1:2181')
 client.once('connected', () => {
-	client.create('/userServer', new Buffer('127.0.0.1:9090'),  err => {
+	client.create(
+		'/userServer', 
+		new Buffer('127.0.0.1:9090'), 
+		zookeeper.CreateMode.EPHEMERAL,(err, path) => {  //EPHEMERAL mode remove node on disconnect
 		if(err) {
 			console.error(err)
 		} else {
-			console.log('Create /userServer success')
+			console.log(`Create ${path} success`)
 		}
-		client.close()
 	})
 })
 client.connect()

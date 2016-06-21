@@ -14,6 +14,7 @@ const client = zookeeper.createClient('127.0.0.1:2181')
 client.connect()
 client.once('connected', () => {
     client.getData('/userServer', event => {}, (err, data, stat) => {
+        console.log(err, data, stat)
         const serviceAddr = data.toString().split(':')
             //connect to user server
         const userConn = thrift.createConnection(serviceAddr[0], parseInt(serviceAddr[1]), {
