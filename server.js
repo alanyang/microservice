@@ -65,7 +65,7 @@ const userServer = thrift.createServer(User, {
         let user = new UserType.User
         return Object.assign(user, _user)
     },
-
+    
     resetPassword(id, old, result) {
         const _user = getUser(id)
         setTimeout(() => {
@@ -133,14 +133,19 @@ userServer.listen(9090)
 
 const client = zookeeper.createClient('127.0.0.1:2181')
 client.once('connected', () => {
-	client.create('/userServer', (err, path) => console.log(err, path))
-	client.create(
-		`/userServer/127.0.0.1:9090`, 
-		zookeeper.CreateMode.EPHEMERAL,(err, path) => {  //EPHEMERAL mode remove node on disconnect
-		if(err) {
-			console.error(err)
+	client.exists('/userServer', (err, stat) => {
+		if(!stat) {
+			client.create('/userServer', (err, path) => console.log(err, path))		
 		} else {
-			console.log(`Create ${path} success`)
+			client.create(
+				`/userServer/127.0.0.1:9090`, 
+				zookeeper.CreateMode.EPHEMERAL,(err, path) => {  //EPHEMERAL mode remove node on disconnect
+				if(err) {
+					console.error(err)
+				} else {
+					console.log(`Create ${path} success`)
+				}
+			})
 		}
 	})
 })
